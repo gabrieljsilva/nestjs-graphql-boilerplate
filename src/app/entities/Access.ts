@@ -6,14 +6,12 @@ import { Field, ObjectType } from '@nestjs/graphql';
 @Entity({ name: 'accesses' })
 export class Access {
   @PrimaryGeneratedColumn()
-  @Field()
   id: string;
 
   @Field()
   @Column()
   email: string;
 
-  @Field()
   @Column()
   password: string;
 }

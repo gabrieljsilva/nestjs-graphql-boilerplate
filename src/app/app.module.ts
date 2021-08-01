@@ -7,9 +7,9 @@ import { AppService } from './app.service';
 
 import OrmConfig from 'config/database/postgres/orm.config';
 
-import { UserModule } from 'app/modules/user';
 import { RepoModule } from './repositories';
-
+import { UserModule } from 'app/modules/user';
+import { AccessModule } from 'app/modules/access';
 @Module({
   imports: [
     TypeOrmModule.forRoot(OrmConfig),
@@ -18,6 +18,7 @@ import { RepoModule } from './repositories';
     }),
     RepoModule,
     UserModule,
+    AccessModule,
   ],
   controllers: [AppController],
   providers: [AppService],
