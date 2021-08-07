@@ -22,6 +22,11 @@ export class CreateUserTable1627847008467 implements MigrationInterface {
         type: 'varchar',
         isNullable: false,
       },
+      {
+        name: 'status',
+        type: 'varchar',
+        isNullable: false,
+      },
       createdAt,
       updatedAt,
     ],

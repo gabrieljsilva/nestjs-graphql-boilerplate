@@ -10,5 +10,7 @@ export class RepoService {
     public readonly AcessRepository: Repository<entities.Access>,
     @InjectRepository(entities.User)
     public readonly UserRepository: Repository<entities.User>,
+    @InjectRepository(entities.Token)
+    public readonly TokenRepository: Repository<entities.Token>,
   ) {}
 }

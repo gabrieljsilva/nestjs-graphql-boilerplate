@@ -10,6 +10,7 @@ import OrmConfig from 'config/database/postgres/orm.config';
 import { RepoModule } from './repositories';
 import { UserModule } from 'app/modules/user';
 import { AccessModule } from 'app/modules/access';
+import { TokenModule } from 'app/modules/token';
 @Module({
   imports: [
     TypeOrmModule.forRoot(OrmConfig),
@@ -19,6 +20,7 @@ import { AccessModule } from 'app/modules/access';
     RepoModule,
     UserModule,
     AccessModule,
+    TokenModule,
   ],
   controllers: [AppController],
   providers: [AppService],

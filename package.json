@@ -19,7 +19,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node ./node_modules/typeorm/cli.js -f src/config/database/postgres/orm.config.ts"
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js -f src/config/database/postgres/orm.config.ts",
+    "migration:run": "docker exec api_v1 /bin/ash -c 'yarn typeorm migration:run'",
+    "migration:revert": "docker exec api_v1 /bin/ash -c 'yarn typeorm migration:revert'"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

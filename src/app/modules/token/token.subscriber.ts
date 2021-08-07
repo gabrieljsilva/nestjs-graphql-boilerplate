@@ -5,21 +5,21 @@ import {
   Connection,
 } from 'typeorm';
 
-import { Access } from '../../entities';
+import { Token } from '../../entities';
 
 import { hash } from '../../../config/crypt';
 
 @EventSubscriber()
-export class AccessSubscriber implements EntitySubscriberInterface<Access> {
+export class TokenSubscriber implements EntitySubscriberInterface<Token> {
   constructor(connection: Connection) {
     connection.subscribers.push(this);
   }
 
   listenTo() {
-    return Access;
+    return Token;
   }
 
-  async beforeInsert(event: InsertEvent<Access>) {
-    event.entity.password = await hash(event.entity.password);
+  async beforeInsert(event: InsertEvent<Token>) {
+    event.entity.token = await hash(event.entity.token);
   }
 }

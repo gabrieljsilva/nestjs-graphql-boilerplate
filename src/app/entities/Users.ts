@@ -12,6 +12,8 @@ import { Field, ObjectType } from '@nestjs/graphql';
 
 import { Access } from './Access';
 
+import { USER_STATUS } from '../../shared/constants';
+
 @ObjectType()
 @Entity({ name: 'users' })
 export class User {
@@ -31,6 +33,9 @@ export class User {
   @OneToOne(() => Access)
   @JoinColumn({ name: 'access_id', referencedColumnName: 'id' })
   access: Access;
+
+  @Column({ enum: USER_STATUS })
+  status: USER_STATUS;
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })
