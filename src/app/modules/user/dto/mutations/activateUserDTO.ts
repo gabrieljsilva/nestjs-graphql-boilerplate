@@ -1,14 +1,10 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { Exclude, Expose } from 'class-transformer';
 import { IsEmail, Length } from 'class-validator';
+
 @Exclude()
 @InputType()
-export class CreateUserDTO {
-  @Expose()
-  @Field()
-  @Length(4, 16)
-  userName: string;
-
+export class ActivateUserDTO {
   @Expose()
   @Field()
   @IsEmail()
@@ -16,6 +12,6 @@ export class CreateUserDTO {
 
   @Expose()
   @Field()
-  @Length(8, 16)
-  password: string;
+  @Length(6, 6)
+  token: string;
 }

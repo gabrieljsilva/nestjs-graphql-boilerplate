@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import { SendEmailOptions } from './mailer.processor';
 
 interface SendConfirmationAccountEmailArgs {
-  magicLink: string;
+  token: string;
   userName: string;
 }
 

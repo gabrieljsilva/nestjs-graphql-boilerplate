@@ -7,7 +7,7 @@ import * as entities from 'app/entities';
 export class RepoService {
   constructor(
     @InjectRepository(entities.Access)
-    public readonly AcessRepository: Repository<entities.Access>,
+    public readonly AccessRepository: Repository<entities.Access>,
     @InjectRepository(entities.User)
     public readonly UserRepository: Repository<entities.User>,
     @InjectRepository(entities.Token)

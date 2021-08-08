@@ -1,1 +1,2 @@
-export * from './AlreadyExists';
+export * from './alreadyExists';
+export * from './notExists';

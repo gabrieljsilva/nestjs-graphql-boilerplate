@@ -27,4 +27,7 @@ export class Env {
 
   @Expose()
   APP_EMAIL: string;
+
+  @Expose()
+  CLIENT_HOST: string;
 }

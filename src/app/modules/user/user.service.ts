@@ -2,13 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
-import { createUserDTO } from './dto';
 import { RepoService } from '../../repositories';
 import { generateToken } from '../../../config/crypt';
+import {
+  AlreadyExistsException,
+  NotExistsException,
+} from '../../../shared/exceptions';
 import { TOKEN_TYPES, USER_STATUS } from '../../../shared/constants';
 import { MailerService } from '../mailer';
 import { AccessService } from '../access';
-import { AlreadyExistsException } from '../../../shared/exceptions';
+import { compare } from '../../../config/crypt';
+
+import { CreateUserDTO, ActivateUserDTO } from './dto';
+import { ENV } from '../../../shared/constants';
 
 @Injectable()
 export class UserService {
@@ -19,7 +25,7 @@ export class UserService {
     private readonly accessService: AccessService,
   ) {}
 
-  async createUser(dto: createUserDTO) {
+  async createUser(dto: CreateUserDTO) {
     const accessAlreadyExists = await this.accessService.verifyIfAccessExists(
       dto.email,
     );
@@ -29,7 +35,7 @@ export class UserService {
     }
 
     return this.connection.transaction(async (transaction) => {
-      const access = this.RepoService.AcessRepository.create({
+      const access = this.RepoService.AccessRepository.create({
         email: dto.email,
         password: dto.password,
       });
@@ -44,9 +50,11 @@ export class UserService {
 
       await transaction.save(user);
 
+      const unHashedToken = await generateToken(6);
+
       const token = this.RepoService.TokenRepository.create({
         userId: user.id,
-        token: await generateToken(6),
+        token: unHashedToken,
         type: TOKEN_TYPES.ACTIVATION_ACCOUNT,
       });
 
@@ -54,11 +62,48 @@ export class UserService {
 
       await this.mailerService.sendConfirmationAccountEmail(access.email, {
         userName: user.userName,
-        magicLink: token.token,
+        token: unHashedToken,
       });
 
       return user;
     });
+  }
+
+  async activateUser(dto: ActivateUserDTO) {
+    const access = await this.RepoService.AccessRepository.findOne({
+      where: {
+        email: dto.email,
+      },
+    });
+
+    if (!access) throw new NotExistsException('user');
+
+    const user = await this.RepoService.UserRepository.findOne({
+      where: {
+        accessId: access.id,
+      },
+    });
+
+    if (!user) throw new NotExistsException('user');
+
+    const token = await this.RepoService.TokenRepository.findOne({
+      where: {
+        userId: user.id,
+      },
+      order: { id: 'DESC' },
+    });
+
+    if (!token) throw new NotExistsException('token');
+
+    const tokenNotMatch = !compare(dto.token, token.token);
+
+    if (tokenNotMatch) throw new NotExistsException('token');
+
+    user.status = USER_STATUS.ACTIVE;
+
+    await this.RepoService.UserRepository.save(user);
+
+    return user;
   }
 
   async findUsers() {

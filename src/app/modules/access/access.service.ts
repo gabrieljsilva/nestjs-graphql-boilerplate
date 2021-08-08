@@ -7,7 +7,7 @@ export class AccessService {
 
   async verifyIfAccessExists(email: string) {
     return (
-      (await this.repoService.AcessRepository.count({
+      (await this.repoService.AccessRepository.count({
         where: {
           email: email,
         },
