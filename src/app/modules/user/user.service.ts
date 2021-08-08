@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
 
 import { createUserDTO } from './dto';
 import { RepoService } from '../../repositories';
@@ -11,13 +13,14 @@ import { AlreadyExistsException } from '../../../shared/exceptions';
 @Injectable()
 export class UserService {
   constructor(
+    @InjectConnection() private readonly connection: Connection,
     private readonly RepoService: RepoService,
     private readonly mailerService: MailerService,
     private readonly accessService: AccessService,
   ) {}
 
   async createUser(dto: createUserDTO) {
-    const accessAlreadyExists = this.accessService.verifyIfAccessExists(
+    const accessAlreadyExists = await this.accessService.verifyIfAccessExists(
       dto.email,
     );
 
@@ -25,35 +28,37 @@ export class UserService {
       throw new AlreadyExistsException('user', ['email']);
     }
 
-    const access = this.RepoService.AcessRepository.create({
-      email: dto.email,
-      password: dto.password,
+    return this.connection.transaction(async (transaction) => {
+      const access = this.RepoService.AcessRepository.create({
+        email: dto.email,
+        password: dto.password,
+      });
+
+      await transaction.save(access);
+
+      const user = this.RepoService.UserRepository.create({
+        userName: dto.userName,
+        accessId: access.id,
+        status: USER_STATUS.UNCONFIRMED,
+      });
+
+      await transaction.save(user);
+
+      const token = this.RepoService.TokenRepository.create({
+        userId: user.id,
+        token: await generateToken(6),
+        type: TOKEN_TYPES.ACTIVATION_ACCOUNT,
+      });
+
+      await transaction.save(token);
+
+      await this.mailerService.sendConfirmationAccountEmail(access.email, {
+        userName: user.userName,
+        magicLink: token.token,
+      });
+
+      return user;
     });
-
-    await this.RepoService.AcessRepository.save(access);
-
-    const user = this.RepoService.UserRepository.create({
-      userName: dto.userName,
-      accessId: access.id,
-      status: USER_STATUS.UNCONFIRMED,
-    });
-
-    await this.RepoService.UserRepository.save(user);
-
-    const token = this.RepoService.TokenRepository.create({
-      userId: user.id,
-      token: await generateToken(6),
-      type: TOKEN_TYPES.ACTIVATION_ACCOUNT,
-    });
-
-    await this.RepoService.TokenRepository.save(token);
-
-    await this.mailerService.sendConfirmationAccountEmail(access.email, {
-      userName: user.userName,
-      magicLink: token.token,
-    });
-
-    return user;
   }
 
   async findUsers() {
