@@ -5,12 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import OrmConfig from 'config/database/postgres/orm.config';
+import OrmConfig from '../config/database/postgres/orm.config';
 
 import { RepoModule } from './repositories';
-import { UserModule } from 'app/modules/user';
-import { AccessModule } from 'app/modules/access';
-import { TokenModule } from 'app/modules/token';
+import { UserModule } from './modules/user';
+import { AccessModule } from './modules/access';
+import { TokenModule } from './modules/token';
+import { MailerModule } from './modules/mailer';
 @Module({
   imports: [
     TypeOrmModule.forRoot(OrmConfig),
@@ -21,6 +22,7 @@ import { TokenModule } from 'app/modules/token';
     UserModule,
     AccessModule,
     TokenModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

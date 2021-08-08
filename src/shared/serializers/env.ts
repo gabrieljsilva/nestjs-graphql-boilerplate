@@ -17,4 +17,14 @@ export class Env {
 
   @Expose()
   DB_NAME: string;
+
+  @Expose()
+  REDIS_HOST: string;
+
+  @Expose()
+  @Transform(({ value }) => Number(value))
+  REDIS_PORT: number;
+
+  @Expose()
+  APP_EMAIL: string;
 }

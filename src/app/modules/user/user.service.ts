@@ -6,9 +6,14 @@ import { RepoService } from '../../repositories';
 import { generateToken } from '../../../config/crypt';
 import { TOKEN_TYPES, USER_STATUS } from '../../../shared/constants';
 
+import { MailerService } from '../mailer';
+
 @Injectable()
 export class UserService {
-  constructor(private readonly RepoService: RepoService) {}
+  constructor(
+    private readonly RepoService: RepoService,
+    private readonly mailerService: MailerService,
+  ) {}
 
   async createUser(dto: createUserDTO) {
     const access = this.RepoService.AcessRepository.create({
@@ -33,6 +38,11 @@ export class UserService {
     });
 
     await this.RepoService.TokenRepository.save(token);
+
+    await this.mailerService.sendConfirmationAccountEmail(access.email, {
+      userName: user.userName,
+      magicLink: token.token,
+    });
 
     return user;
   }
