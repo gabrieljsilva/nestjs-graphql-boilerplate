@@ -1,4 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { RepoService } from '../../repositories';
 
 @Injectable()
-export class AccessService {}
+export class AccessService {
+  constructor(private readonly repoService: RepoService) {}
+
+  async verifyIfAccessExists(email: string) {
+    return (
+      (await this.repoService.AcessRepository.count({
+        where: {
+          email: email,
+        },
+      })) > 0
+    );
+  }
+}

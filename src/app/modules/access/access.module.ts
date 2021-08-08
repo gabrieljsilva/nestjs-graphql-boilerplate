@@ -5,5 +5,6 @@ import { AccessSubscriber } from './access.subscriber';
 
 @Module({
   providers: [AccessService, AccessSubscriber],
+  exports: [AccessService],
 })
 export class AccessModule {}
