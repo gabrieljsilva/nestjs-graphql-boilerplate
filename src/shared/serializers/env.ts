@@ -29,5 +29,15 @@ export class Env {
   APP_EMAIL: string;
 
   @Expose()
-  CLIENT_HOST: string;
+  SMTP_HOST: string;
+
+  @Expose()
+  @Transform(({ value }) => Number(value))
+  SMTP_PORT: number;
+
+  @Expose()
+  SMTP_USER: string;
+
+  @Expose()
+  SMTP_PASSWORD: string;
 }
