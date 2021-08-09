@@ -23,6 +23,11 @@ export class CreateTokensTable1628303099837 implements MigrationInterface {
         isNullable: false,
       },
       {
+        name: 'status',
+        type: 'varchar',
+        isNullable: false,
+      },
+      {
         name: 'use_attempts',
         type: 'int',
         isNullable: false,

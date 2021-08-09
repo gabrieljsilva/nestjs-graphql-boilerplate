@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
-import { TOKEN_TYPES } from '../../shared/constants';
+import { TOKEN_TYPES, TOKEN_STATUS } from '../../shared/constants';
 import { User } from './Users';
 
 @Entity({ name: 'tokens' })
@@ -24,6 +24,9 @@ export class Token {
 
   @Column({ enum: TOKEN_TYPES })
   type: TOKEN_TYPES;
+
+  @Column({ enum: TOKEN_STATUS })
+  status: TOKEN_STATUS;
 
   @Column()
   token: string;

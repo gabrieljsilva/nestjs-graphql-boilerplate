@@ -8,13 +8,16 @@ import {
   AlreadyExistsException,
   NotExistsException,
 } from '../../../shared/exceptions';
-import { TOKEN_TYPES, USER_STATUS } from '../../../shared/constants';
+import {
+  TOKEN_TYPES,
+  TOKEN_STATUS,
+  USER_STATUS,
+} from '../../../shared/constants';
 import { MailerService } from '../mailer';
 import { AccessService } from '../access';
 import { compare } from '../../../config/crypt';
 
 import { CreateUserDTO, ActivateUserDTO } from './dto';
-import { ENV } from '../../../shared/constants';
 
 @Injectable()
 export class UserService {
@@ -56,6 +59,7 @@ export class UserService {
         userId: user.id,
         token: unHashedToken,
         type: TOKEN_TYPES.ACTIVATION_ACCOUNT,
+        status: TOKEN_STATUS.UNUSED,
       });
 
       await transaction.save(token);
@@ -86,16 +90,23 @@ export class UserService {
 
     if (!user) throw new NotExistsException('user');
 
-    const token = await this.RepoService.TokenRepository.findOne({
-      where: {
+    const token = await this.RepoService.TokenRepository.createQueryBuilder()
+      .where('user_id = :userId ', {
         userId: user.id,
-      },
-      order: { id: 'DESC' },
-    });
+      })
+      .andWhere('status = :status', { status: TOKEN_STATUS.UNUSED })
+      .andWhere('use_attempts < 3')
+      .orderBy('created_at', 'DESC')
+      .getOne();
 
     if (!token) throw new NotExistsException('token');
 
     const tokenNotMatch = !compare(dto.token, token.token);
+
+    token.useAttempts++;
+    token.status = TOKEN_STATUS.USED;
+
+    await this.RepoService.TokenRepository.save(token);
 
     if (tokenNotMatch) throw new NotExistsException('token');
 
