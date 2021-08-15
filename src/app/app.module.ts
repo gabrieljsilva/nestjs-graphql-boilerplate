@@ -10,7 +10,7 @@ import OrmConfig from '../config/database/postgres/orm.config';
 
 import { RepoModule } from './repositories';
 import { UserModule } from './modules/user';
-import { AccessModule } from './modules/access';
+import { CredentialsModule } from './modules/credentials';
 import { TokenModule } from './modules/token';
 import { MailerModule } from './modules/mailer';
 @Module({
@@ -22,7 +22,7 @@ import { MailerModule } from './modules/mailer';
     }),
     RepoModule,
     UserModule,
-    AccessModule,
+    CredentialsModule,
     TokenModule,
     MailerModule,
   ],

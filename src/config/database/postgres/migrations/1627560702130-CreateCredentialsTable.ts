@@ -2,9 +2,9 @@ import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 import { id } from '../utils/columns';
 
-export class CreateAccessTable1627560702130 implements MigrationInterface {
+export class CreateCredentialsTable1627560702130 implements MigrationInterface {
   private table = new Table({
-    name: 'accesses',
+    name: 'credentials',
     columns: [
       id,
       {

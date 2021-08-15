@@ -14,7 +14,7 @@ import {
   USER_STATUS,
 } from '../../../shared/constants';
 import { MailerService } from '../mailer';
-import { AccessService } from '../access';
+import { CredentialsService } from '../credentials';
 import { compare } from '../../../config/crypt';
 
 import { CreateUserDTO, ActivateUserDTO } from './dto';
@@ -25,29 +25,28 @@ export class UserService {
     @InjectConnection() private readonly connection: Connection,
     private readonly RepoService: RepoService,
     private readonly mailerService: MailerService,
-    private readonly accessService: AccessService,
+    private readonly CredentialsService: CredentialsService,
   ) {}
 
   async createUser(dto: CreateUserDTO) {
-    const accessAlreadyExists = await this.accessService.verifyIfAccessExists(
-      dto.email,
-    );
+    const credentialsAlreadyExists =
+      await this.CredentialsService.verifyIfCredentialsExists(dto.email);
 
-    if (accessAlreadyExists) {
+    if (credentialsAlreadyExists) {
       throw new AlreadyExistsException('user', ['email']);
     }
 
     return this.connection.transaction(async (transaction) => {
-      const access = this.RepoService.AccessRepository.create({
+      const credentials = this.RepoService.CredentialsRepository.create({
         email: dto.email,
         password: dto.password,
       });
 
-      await transaction.save(access);
+      await transaction.save(credentials);
 
       const user = this.RepoService.UserRepository.create({
         userName: dto.userName,
-        accessId: access.id,
+        credentialsId: credentials.id,
         status: USER_STATUS.UNCONFIRMED,
       });
 
@@ -64,7 +63,7 @@ export class UserService {
 
       await transaction.save(token);
 
-      await this.mailerService.sendConfirmationAccountEmail(access.email, {
+      await this.mailerService.sendConfirmationAccountEmail(credentials.email, {
         userName: user.userName,
         token: unHashedToken,
       });
@@ -74,17 +73,17 @@ export class UserService {
   }
 
   async activateUser(dto: ActivateUserDTO) {
-    const access = await this.RepoService.AccessRepository.findOne({
+    const credentials = await this.RepoService.CredentialsRepository.findOne({
       where: {
         email: dto.email,
       },
     });
 
-    if (!access) throw new NotExistsException('user');
+    if (!credentials) throw new NotExistsException('user');
 
     const user = await this.RepoService.UserRepository.findOne({
       where: {
-        accessId: access.id,
+        credentialsId: credentials.id,
       },
     });
 
@@ -118,6 +117,6 @@ export class UserService {
   }
 
   async findUsers() {
-    return this.RepoService.UserRepository.find({ relations: ['access'] });
+    return this.RepoService.UserRepository.find({ relations: ['credentials'] });
   }
 }

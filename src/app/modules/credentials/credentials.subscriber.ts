@@ -5,21 +5,23 @@ import {
   Connection,
 } from 'typeorm';
 
-import { Access } from '../../entities';
+import { Credentials } from '../../entities';
 
 import { hash } from '../../../config/crypt';
 
 @EventSubscriber()
-export class AccessSubscriber implements EntitySubscriberInterface<Access> {
+export class CredentialsSubscriber
+  implements EntitySubscriberInterface<Credentials>
+{
   constructor(connection: Connection) {
     connection.subscribers.push(this);
   }
 
   listenTo() {
-    return Access;
+    return Credentials;
   }
 
-  async beforeInsert(event: InsertEvent<Access>) {
+  async beforeInsert(event: InsertEvent<Credentials>) {
     event.entity.password = await hash(event.entity.password);
   }
 }

@@ -10,7 +10,7 @@ import {
 
 import { Field, ObjectType } from '@nestjs/graphql';
 
-import { Access } from './Access';
+import { Credentials } from './Credentials';
 
 import { USER_STATUS } from '../../shared/constants';
 
@@ -26,13 +26,13 @@ export class User {
   userName: string;
 
   @Field()
-  @Column({ name: 'access_id' })
-  accessId: string;
+  @Column({ name: 'credentials_id' })
+  credentialsId: string;
 
   @Field()
-  @OneToOne(() => Access)
-  @JoinColumn({ name: 'access_id', referencedColumnName: 'id' })
-  access: Access;
+  @OneToOne(() => Credentials)
+  @JoinColumn({ name: 'credentials_id', referencedColumnName: 'id' })
+  credentials: Credentials;
 
   @Column({ enum: USER_STATUS })
   status: USER_STATUS;

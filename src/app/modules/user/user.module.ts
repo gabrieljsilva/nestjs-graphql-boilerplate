@@ -3,9 +3,9 @@ import { Module } from '@nestjs/common';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 import { MailerModule } from '../mailer';
-import { AccessModule } from '../access';
+import { CredentialsModule } from '../credentials';
 @Module({
-  imports: [MailerModule, AccessModule],
+  imports: [MailerModule, CredentialsModule],
   providers: [UserResolver, UserService],
 })
 export class UserModule {}

@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { RepoService } from '../../repositories';
 
 @Injectable()
-export class AccessService {
+export class CredentialsService {
   constructor(private readonly repoService: RepoService) {}
 
-  async verifyIfAccessExists(email: string) {
+  async verifyIfCredentialsExists(email: string) {
     return (
-      (await this.repoService.AccessRepository.count({
+      (await this.repoService.CredentialsRepository.count({
         where: {
           email: email,
         },

@@ -18,7 +18,7 @@ export class CreateUserTable1627847008467 implements MigrationInterface {
         isNullable: false,
       },
       {
-        name: 'access_id',
+        name: 'credentials_id',
         type: 'varchar',
         isNullable: false,
       },
@@ -33,9 +33,9 @@ export class CreateUserTable1627847008467 implements MigrationInterface {
   });
 
   private tableForeignKey = new TableForeignKey({
-    name: 'user_has_access',
-    columnNames: ['access_id'],
-    referencedTableName: 'accesses',
+    name: 'user_has_credentials',
+    columnNames: ['credentials_id'],
+    referencedTableName: 'credentials',
     referencedColumnNames: ['id'],
   });
 

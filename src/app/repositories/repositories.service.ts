@@ -6,8 +6,8 @@ import * as entities from 'app/entities';
 @Injectable()
 export class RepoService {
   constructor(
-    @InjectRepository(entities.Access)
-    public readonly AccessRepository: Repository<entities.Access>,
+    @InjectRepository(entities.Credentials)
+    public readonly CredentialsRepository: Repository<entities.Credentials>,
     @InjectRepository(entities.User)
     public readonly UserRepository: Repository<entities.User>,
     @InjectRepository(entities.Token)
