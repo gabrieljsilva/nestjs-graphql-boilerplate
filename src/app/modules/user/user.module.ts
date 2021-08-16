@@ -7,5 +7,6 @@ import { CredentialsModule } from '../credentials';
 @Module({
   imports: [MailerModule, CredentialsModule],
   providers: [UserResolver, UserService],
+  exports: [],
 })
 export class UserModule {}

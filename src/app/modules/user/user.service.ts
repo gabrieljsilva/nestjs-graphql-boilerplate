@@ -12,6 +12,7 @@ import {
   TOKEN_TYPES,
   TOKEN_STATUS,
   USER_STATUS,
+  CREDENTIALS_TYPE,
 } from '../../../shared/constants';
 import { MailerService } from '../mailer';
 import { CredentialsService } from '../credentials';
@@ -30,7 +31,7 @@ export class UserService {
 
   async createUser(dto: CreateUserDTO) {
     const credentialsAlreadyExists =
-      await this.CredentialsService.verifyIfCredentialsExists(dto.email);
+      await this.CredentialsService.verifyIfCredentialsExistsByEmail(dto.email);
 
     if (credentialsAlreadyExists) {
       throw new AlreadyExistsException('user', ['email']);
@@ -40,6 +41,7 @@ export class UserService {
       const credentials = this.RepoService.CredentialsRepository.create({
         email: dto.email,
         password: dto.password,
+        type: CREDENTIALS_TYPE.USER,
       });
 
       await transaction.save(credentials);
@@ -117,6 +119,19 @@ export class UserService {
   }
 
   async findUsers() {
-    return this.RepoService.UserRepository.find({ relations: ['credentials'] });
+    return this.RepoService.UserRepository.find({
+      relations: ['credentials'],
+      where: {
+        status: USER_STATUS.ACTIVE,
+      },
+    });
+  }
+
+  async findUserByCredentialsId(credentialsId: string) {
+    return this.RepoService.UserRepository.findOne({
+      where: {
+        credentials: credentialsId,
+      },
+    });
   }
 }

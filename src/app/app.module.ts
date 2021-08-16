@@ -13,6 +13,7 @@ import { UserModule } from './modules/user';
 import { CredentialsModule } from './modules/credentials';
 import { TokenModule } from './modules/token';
 import { MailerModule } from './modules/mailer';
+import { AuthModule } from './modules/auth';
 @Module({
   imports: [
     TypeOrmModule.forRoot(OrmConfig),
@@ -25,6 +26,7 @@ import { MailerModule } from './modules/mailer';
     CredentialsModule,
     TokenModule,
     MailerModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

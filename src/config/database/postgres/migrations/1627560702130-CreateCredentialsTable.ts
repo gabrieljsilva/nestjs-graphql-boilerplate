@@ -18,6 +18,11 @@ export class CreateCredentialsTable1627560702130 implements MigrationInterface {
         type: 'varchar',
         isNullable: false,
       },
+      {
+        name: 'type',
+        type: 'varchar',
+        isNullable: false,
+      },
     ],
   });
   public async up(queryRunner: QueryRunner): Promise<void> {
