@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
@@ -26,6 +26,7 @@ export class UserService {
     @InjectConnection() private readonly connection: Connection,
     private readonly RepoService: RepoService,
     private readonly mailerService: MailerService,
+    @Inject(forwardRef(() => CredentialsService))
     private readonly CredentialsService: CredentialsService,
   ) {}
 
@@ -132,6 +133,7 @@ export class UserService {
       where: {
         credentials: credentialsId,
       },
+      relations: ['credentials'],
     });
   }
 }
