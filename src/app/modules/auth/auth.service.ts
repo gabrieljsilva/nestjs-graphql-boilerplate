@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 import { RepoService } from '../../repositories';
-import { NotExistsException } from '../../../shared/exceptions';
+import {
+  CredentialsNotMatchException,
+  NotExistsException,
+} from '../../../shared/exceptions';
 import { compare } from '../../../config/crypt';
 import { CredentialsService } from '../credentials';
 
@@ -10,6 +14,7 @@ export class AuthService {
   constructor(
     private readonly repoService: RepoService,
     private readonly credentialsService: CredentialsService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async validateCredentials(email: string, password: string) {
@@ -21,14 +26,25 @@ export class AuthService {
       throw new NotExistsException('credentials');
     }
 
-    const passwordMatchs = await compare(password, credentials.password);
+    const passwordMatch = await compare(password, credentials.password);
 
-    if (!passwordMatchs) {
+    if (!passwordMatch) {
       return null;
     }
 
     delete credentials.password;
 
     return credentials;
+  }
+
+  async login(email: string, password: string) {
+    const credentials = await this.validateCredentials(email, password);
+
+    if (!credentials) {
+      throw new CredentialsNotMatchException();
+    }
+
+    const accessToken = this.jwtService.sign({ id: credentials.id });
+    return { accessToken };
   }
 }
