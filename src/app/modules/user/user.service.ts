@@ -18,7 +18,7 @@ import { MailerService } from '../mailer';
 import { CredentialsService } from '../credentials';
 import { compare } from '../../../config/crypt';
 
-import { CreateUserDTO, ActivateUserDTO } from './dto';
+import { CreateUserDTO, ActivateUserDTO } from './types';
 
 @Injectable()
 export class UserService {
@@ -49,7 +49,7 @@ export class UserService {
 
       const user = this.RepoService.UserRepository.create({
         userName: dto.userName,
-        credentialsId: credentials.id,
+        credentials: credentials,
         status: USER_STATUS.UNCONFIRMED,
       });
 
@@ -88,6 +88,7 @@ export class UserService {
       where: {
         credentialsId: credentials.id,
       },
+      relations: ['credentials'],
     });
 
     if (!user) throw new NotExistsException('user');
@@ -101,7 +102,7 @@ export class UserService {
       .orderBy('created_at', 'DESC')
       .getOne();
 
-    if (!token) throw new NotExistsException('token');
+    if (!token) throw new NotExistsException('token', ['token']);
 
     const tokenNotMatch = !compare(dto.token, token.token);
 

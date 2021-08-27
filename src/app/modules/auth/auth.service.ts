@@ -9,6 +9,8 @@ import {
 import { compare } from '../../../config/crypt';
 import { CredentialsService } from '../credentials';
 
+import { LoginDTO } from './types';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -37,7 +39,7 @@ export class AuthService {
     return credentials;
   }
 
-  async login(email: string, password: string) {
+  async login({ email, password }: LoginDTO) {
     const credentials = await this.validateCredentials(email, password);
 
     if (!credentials) {
