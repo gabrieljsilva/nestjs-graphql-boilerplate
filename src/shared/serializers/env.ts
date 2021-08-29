@@ -40,4 +40,7 @@ export class Env {
 
   @Expose()
   SMTP_PASSWORD: string;
+
+  @Expose()
+  APP_SECRET: string;
 }

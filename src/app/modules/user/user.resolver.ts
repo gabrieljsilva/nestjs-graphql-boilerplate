@@ -1,10 +1,13 @@
 import { Resolver, Mutation, Query, Args } from '@nestjs/graphql';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { JwtPayload } from '../../../shared/types';
 
 import { User } from '../../entities';
 import { UserService } from './user.service';
+import { CurrentUser } from '../../../shared/decorators';
 
 import { CreateUserDTO, ActivateUserDTO } from './types';
+import { GqlAuthGuard } from '../../../shared/guards';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -22,8 +25,15 @@ export class UserResolver {
     return this.userService.activateUser(activateUserDTO);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => [User])
   async findUsers() {
     return this.userService.findUsers();
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => User)
+  async whoAmI(@CurrentUser() user: JwtPayload) {
+    return this.userService.findUserByCredentialsId(user.credentialsId);
   }
 }

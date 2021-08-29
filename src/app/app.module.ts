@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { formatError } from '../config/graphql/formatError';
+import { formatError } from '../config/graphql';
 import OrmConfig from '../config/database/postgres/orm.config';
 
 import { RepoModule } from './repositories';
@@ -20,6 +20,7 @@ import { AuthModule } from './modules/auth';
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       formatError: formatError,
+      context: ({ req }) => ({ req }),
     }),
     RepoModule,
     UserModule,

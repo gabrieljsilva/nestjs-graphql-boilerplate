@@ -8,6 +8,7 @@ import {
 } from '../../../shared/exceptions';
 import { compare } from '../../../config/crypt';
 import { CredentialsService } from '../credentials';
+import { JwtPayload } from '../../../shared/types';
 
 import { LoginDTO } from './types';
 
@@ -46,7 +47,11 @@ export class AuthService {
       throw new CredentialsNotMatchException();
     }
 
-    const accessToken = this.jwtService.sign({ id: credentials.id });
+    const payload: JwtPayload = {
+      credentialsId: credentials.id,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
     return { accessToken };
   }
 }

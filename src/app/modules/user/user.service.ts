@@ -104,7 +104,7 @@ export class UserService {
 
     if (!token) throw new NotExistsException('token', ['token']);
 
-    const tokenNotMatch = !compare(dto.token, token.token);
+    const tokenNotMatch = !(await compare(dto.token, token.token));
 
     token.useAttempts++;
     token.status = TOKEN_STATUS.USED;
@@ -132,9 +132,17 @@ export class UserService {
   async findUserByCredentialsId(credentialsId: string) {
     return this.RepoService.UserRepository.findOne({
       where: {
-        credentials: credentialsId,
+        credentialsId: credentialsId,
       },
       relations: ['credentials'],
+    });
+  }
+
+  async findUserById(userId: string) {
+    return this.RepoService.UserRepository.findOne({
+      where: {
+        id: userId,
+      },
     });
   }
 }
