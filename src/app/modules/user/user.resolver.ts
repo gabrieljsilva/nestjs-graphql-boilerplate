@@ -1,5 +1,5 @@
 import { Resolver, Mutation, Query, Args } from '@nestjs/graphql';
-import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { JwtPayload } from '../../../shared/types';
 
 import { User } from '../../entities';
@@ -13,13 +13,11 @@ import { GqlAuthGuard } from '../../../shared/guards';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @UsePipes(new ValidationPipe({ transform: true }))
   @Mutation(() => User)
   async createUser(@Args('data') createUserDTO: CreateUserDTO) {
     return this.userService.createUser(createUserDTO);
   }
 
-  @UsePipes(new ValidationPipe({ transform: true }))
   @Mutation(() => User)
   async activateUser(@Args('data') activateUserDTO: ActivateUserDTO) {
     return this.userService.activateUser(activateUserDTO);
