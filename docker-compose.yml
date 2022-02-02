@@ -5,11 +5,11 @@ services:
     container_name: gql-postgres
     image: postgres
     ports:
-      - 5432:5432
+      - 5432:${DB_PORT}
     environment:
-      - POSTGRES_DB=gql
-      - POSTGRES_USER=dev
-      - POSTGRES_PASSWORD=dev
+      - POSTGRES_DB=${gql}
+      - POSTGRES_USER=${dev}
+      - POSTGRES_PASSWORD=${dev}
     volumes:
       - postgres:/data/postgres
     networks: 
