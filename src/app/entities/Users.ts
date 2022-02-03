@@ -25,7 +25,6 @@ export class User {
   @Column({ name: 'user_name' })
   userName: string;
 
-  @Field()
   @Column({ name: 'credentials_id' })
   credentialsId: string;
 
@@ -34,6 +33,7 @@ export class User {
   @JoinColumn({ name: 'credentials_id', referencedColumnName: 'id' })
   credentials: Credentials;
 
+  @Field()
   @Column({ enum: USER_STATUS })
   status: USER_STATUS;
 
