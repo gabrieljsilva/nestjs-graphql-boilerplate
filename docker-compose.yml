@@ -7,9 +7,9 @@ services:
     ports:
       - 5432:${DB_PORT}
     environment:
-      - POSTGRES_DB=${gql}
-      - POSTGRES_USER=${dev}
-      - POSTGRES_PASSWORD=${dev}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - postgres:/data/postgres
     networks: 

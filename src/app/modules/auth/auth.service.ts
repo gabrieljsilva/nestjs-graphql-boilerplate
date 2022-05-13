@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RepoService } from '../../repositories';
 import {
   CredentialsNotMatchException,
-  NotExistsException,
+  NotFoundException,
 } from '../../../shared/exceptions';
 import { compare } from '../../../config/crypt';
 import { CredentialsService } from '../credentials';
@@ -26,7 +26,7 @@ export class AuthService {
     });
 
     if (!credentials) {
-      throw new NotExistsException('credentials');
+      throw new NotFoundException('credentials');
     }
 
     const passwordMatch = await compare(password, credentials.password);

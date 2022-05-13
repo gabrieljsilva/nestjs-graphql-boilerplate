@@ -6,7 +6,7 @@ import { RepoService } from '../../repositories';
 import { generateToken } from '../../../config/crypt';
 import {
   AlreadyExistsException,
-  NotExistsException,
+  NotFoundException,
 } from '../../../shared/exceptions';
 import {
   TOKEN_TYPES,
@@ -82,7 +82,7 @@ export class UserService {
       },
     });
 
-    if (!credentials) throw new NotExistsException('user');
+    if (!credentials) throw new NotFoundException('user');
 
     const user = await this.RepoService.UserRepository.findOne({
       where: {
@@ -91,7 +91,7 @@ export class UserService {
       relations: ['credentials'],
     });
 
-    if (!user) throw new NotExistsException('user');
+    if (!user) throw new NotFoundException('user');
 
     const token = await this.RepoService.TokenRepository.createQueryBuilder()
       .where('user_id = :userId ', {
@@ -102,7 +102,7 @@ export class UserService {
       .orderBy('created_at', 'DESC')
       .getOne();
 
-    if (!token) throw new NotExistsException('token', ['token']);
+    if (!token) throw new NotFoundException('token', ['token']);
 
     const tokenNotMatch = !(await compare(dto.token, token.token));
 
@@ -111,7 +111,7 @@ export class UserService {
 
     await this.RepoService.TokenRepository.save(token);
 
-    if (tokenNotMatch) throw new NotExistsException('token');
+    if (tokenNotMatch) throw new NotFoundException('token');
 
     user.status = USER_STATUS.ACTIVE;
 

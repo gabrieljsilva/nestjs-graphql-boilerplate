@@ -2,7 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { RepoService } from '../../repositories';
 
 import { User } from '../../entities';
-import { NotExistsException } from '../../../shared/exceptions';
+import { NotFoundException } from '../../../shared/exceptions';
 import { UserService } from '../user';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class CredentialsService {
     });
 
     if (!credentials) {
-      throw new NotExistsException('credentials');
+      throw new NotFoundException('credentials');
     }
 
     switch (credentials.type) {
@@ -38,7 +38,7 @@ export class CredentialsService {
     }
 
     if (!credentials) {
-      throw new NotExistsException('persona');
+      throw new NotFoundException('persona');
     }
   }
 }

@@ -1,3 +1,3 @@
 export * from './alreadyExists';
-export * from './notExists';
+export * from './notFound';
 export * from './credentialsNotMatch';
