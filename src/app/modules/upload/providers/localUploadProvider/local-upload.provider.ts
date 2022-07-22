@@ -5,7 +5,6 @@ import {
   accessSync,
   createReadStream,
   createWriteStream,
-  existsSync,
   unlinkSync,
 } from 'fs';
 import * as uuid from 'uuid';
