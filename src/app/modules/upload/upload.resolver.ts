@@ -14,4 +14,9 @@ export class UploadResolver {
   ) {
     return this.uploadService.upload(file);
   }
+
+  @Mutation(() => UploadMetadata)
+  async deleteFile(@Args('key', { type: () => String }) key: string) {
+    return this.uploadService.delete(key);
+  }
 }
