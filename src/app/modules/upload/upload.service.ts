@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { LocalUploadProvider } from './providers/localUploadProvider';
 import { RepoService } from '../../repositories';
 import { FileUpload } from 'graphql-upload';
+import { FileUploader } from './types/interfaces';
 
 @Injectable()
 export class UploadService {
   constructor(
     private readonly repoService: RepoService,
-    private readonly localUploadService: LocalUploadProvider,
+    private readonly uploadProvider: FileUploader,
   ) {}
 
   async upload(file: FileUpload) {
-    const fileMetadata = await this.localUploadService.upload(file);
+    const fileMetadata = await this.uploadProvider.upload(file);
 
     return await this.repoService.UploadMetadataRepository.save({
       key: fileMetadata.key,
@@ -34,7 +34,7 @@ export class UploadService {
         key,
       });
 
-      await this.localUploadService.delete(key);
+      await this.uploadProvider.delete(key);
 
       return uploadMetadata;
     } catch {
@@ -43,6 +43,6 @@ export class UploadService {
   }
 
   async getFile(key: string) {
-    return this.localUploadService.getFile(key);
+    return this.uploadProvider.getFile(key);
   }
 }
