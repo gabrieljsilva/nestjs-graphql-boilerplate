@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { FileMetadata, FileUploader } from '../../types/interfaces';
 import { FileUpload } from 'graphql-upload';
 import {
+  accessSync,
   createReadStream,
   createWriteStream,
   existsSync,
@@ -24,7 +25,12 @@ export class LocalUploadProvider implements FileUploader {
   }
 
   async exists(key: string): Promise<boolean> {
-    return existsSync(this.getFilePath(key));
+    try {
+      accessSync(this.getFilePath(key));
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async generateKey(file: FileUpload): Promise<string> {
