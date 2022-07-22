@@ -1,5 +1,5 @@
 import { FileUpload } from 'graphql-upload';
-import { Readable, Writable } from 'stream';
+import { Readable } from 'stream';
 import { FileMetadata } from '../fileMetadata';
 import { Injectable } from '@nestjs/common';
 
