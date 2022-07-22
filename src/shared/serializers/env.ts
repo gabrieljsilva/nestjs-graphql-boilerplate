@@ -43,4 +43,14 @@ export class Env {
 
   @Expose()
   APP_SECRET: string;
+
+  @Expose()
+  APP_PROTOCOL: 'http' | 'https';
+
+  @Expose()
+  APP_HOST: string;
+
+  @Expose()
+  @Transform(({ value }) => Number(value))
+  APP_PORT: number;
 }

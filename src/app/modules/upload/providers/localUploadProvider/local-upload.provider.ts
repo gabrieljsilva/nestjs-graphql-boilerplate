@@ -10,6 +10,7 @@ import {
 import * as uuid from 'uuid';
 import * as mime from 'mime';
 import { join } from 'path';
+import { ENV } from '../../../../../shared/constants';
 
 @Injectable()
 export class LocalUploadProvider implements FileUploader {
@@ -21,6 +22,14 @@ export class LocalUploadProvider implements FileUploader {
 
   private getFilePath(key: string) {
     return join(this.path, key);
+  }
+
+  private static getFileUrl(key: string) {
+    const protocol = ENV.APP_PROTOCOL;
+    const host = ENV.APP_HOST;
+    const port = ENV.APP_PORT;
+    const getFileEndpoint = 'upload';
+    return `${protocol}://${host}:${port}/${getFileEndpoint}/${key}`;
   }
 
   async exists(key: string): Promise<boolean> {
@@ -54,7 +63,7 @@ export class LocalUploadProvider implements FileUploader {
           fileMetadata.key = key;
           fileMetadata.originalName = file.filename;
           fileMetadata.mimeType = file.mimetype;
-          fileMetadata.url = key;
+          fileMetadata.url = LocalUploadProvider.getFileUrl(key);
 
           resolve(fileMetadata);
         })
