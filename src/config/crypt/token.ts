@@ -1,9 +1,8 @@
 import { randomInt } from 'crypto';
 
-const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-export function generateToken(size: number): Promise<string> {
+export function generateRandomToken(size: number): Promise<string> {
   return new Promise((resolve) => {
     let token = '';
     do token += chars[randomInt(chars.length)];

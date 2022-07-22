@@ -14,6 +14,7 @@ import { CredentialsModule } from './modules/credentials';
 import { TokenModule } from './modules/token';
 import { MailerModule } from './modules/mailer';
 import { AuthModule } from './modules/auth';
+import { UploadModule } from './modules/upload';
 @Module({
   imports: [
     TypeOrmModule.forRoot(OrmConfig),
@@ -21,6 +22,7 @@ import { AuthModule } from './modules/auth';
       autoSchemaFile: true,
       formatError: formatError,
       context: ({ req }) => ({ req }),
+      uploads: false,
     }),
     RepoModule,
     UserModule,
@@ -28,6 +30,7 @@ import { AuthModule } from './modules/auth';
     TokenModule,
     MailerModule,
     AuthModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

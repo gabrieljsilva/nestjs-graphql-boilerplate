@@ -3,7 +3,7 @@ import { InjectConnection } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
 import { RepoService } from '../../repositories';
-import { generateToken } from '../../../config/crypt';
+import { generateRandomToken } from '../../../config/crypt';
 import {
   AlreadyExistsException,
   NotFoundException,
@@ -55,7 +55,7 @@ export class UserService {
 
       await transaction.save(user);
 
-      const unHashedToken = await generateToken(6);
+      const unHashedToken = await generateRandomToken(6);
 
       const token = this.RepoService.TokenRepository.create({
         userId: user.id,
